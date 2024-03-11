@@ -1,0 +1,8 @@
+FROM golang:1.21 as builder
+WORKDIR /src
+COPY example-http-service.go .
+RUN go build example-http-service.go
+
+FROM ghcr.io/eunomia-bpf/bpftime:latest@sha256:adcee2ed2ed467a2a43ecdfd190e92e0c0740a3ee2de6840c82fe8b00f4c8deb
+COPY --from=builder /src/example-http-service /example-http-service
+CMD ["bpftime", "start", "/example-http-service"]

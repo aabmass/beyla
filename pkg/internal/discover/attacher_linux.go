@@ -22,6 +22,7 @@ func (ta *TraceAttacher) mountBpfPinPath() error {
 		if err := os.MkdirAll(ta.pinPath, 0700); err != nil {
 			return fmt.Errorf("creating directory %s: %w", ta.pinPath, err)
 		}
+		ta.log.Debug("Created directory", "dir", ta.pinPath)
 	}
 
 	return bpfMount(ta.pinPath)
@@ -41,7 +42,8 @@ func (ta *TraceAttacher) unmountBpfPinPath() {
 }
 
 func bpfMount(pinPath string) error {
-	return unix.Mount(pinPath, pinPath, "bpf", 0, "")
+	return nil
+	// return unix.Mount(pinPath, pinPath, "bpf", 0, "")
 }
 
 func (ta *TraceAttacher) init() error {

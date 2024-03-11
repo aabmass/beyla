@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  example:
+    build:
+      dockerfile: Dockerfile.example
+    ports:
+      - 8080:8080
+
+  beyla:
+    # privileged: true
+    build:
+      dockerfile: Dockerfile.beyla
+    depends_on:
+      example:
+        condition: service_started
+    volumes:
+      - /sys/fs/bpf:/sys/fs/bpf
+    pid: "service:example"
+    security_opt:
+      - "apparmor=unconfined"
+    environment:
+      - BEYLA_PRINT_TRACES=true
+      - BEYLA_SKIP_GO_SPECIFIC_TRACERS=true
+      - BEYLA_SYSTEM_WIDE=true
+      - BEYLA_LOG_LEVEL=DEBUG
+      - BEYLA_BPF_FS_BASE_DIR=/sys/fs/bpf
+      # - BEYLA_OPEN_PORT=8080
+    cap_add:
+      # This shouldn't be needed on newer kernels
+      # https://github.com/grafana/beyla/blob/490a82c1af954babd3188af6aff011f0fda70401/docs/sources/setup/kubernetes.md?plain=1#L252
+      - CAP_SYS_RESOURCE

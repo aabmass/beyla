@@ -4,6 +4,7 @@ package rlimit
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"sync"
 
 	"github.com/cilium/ebpf/internal"
@@ -34,6 +35,7 @@ func init() {
 	// we only want to run the initializer if RemoveMemlock is called
 	// from somewhere.
 	haveMemcgAccounting = detectMemcgAccounting()
+	slog.Error("Error during init", "haveMemcfAccounting", haveMemcgAccounting)
 }
 
 func detectMemcgAccounting() error {
