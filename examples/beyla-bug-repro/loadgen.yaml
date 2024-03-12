@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  labels:
+    app: loadgen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loadgen
+  template:
+    metadata:
+      labels:
+        app: loadgen
+    spec:
+      containers:
+      - name: loadgen
+        image: python:3.11
+        command: ["python", "-u", "-c"]
+        args:
+          - |
+            import urllib.request
+            import time
+
+            while True:
+              with urllib.request.urlopen("http://productpage:9080/productpage") as res:
+                print(res.code, res.msg)
+              time.sleep(0.5)
